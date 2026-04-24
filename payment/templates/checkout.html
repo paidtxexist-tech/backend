@@ -1,0 +1,13 @@
+{% extends 'template.html' %}
+{% block content %}
+<h1>Оплата подписки</h1>
+<div class="checkout-details">
+    <h2>Тариф: {{ plan.name }}</h2>
+    <p>Стоимость: ${{ plan.price }}</p>
+    <p>Длительность: {{ plan.duration }} дней</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Оплатить</button>
+    </form>
+</div>
+{% endblock %}

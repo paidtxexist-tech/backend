@@ -1,0 +1,60 @@
+{% extends 'template.html' %}
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Личный кабинет</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Активные подписки</h2>
+        </div>
+        <div class="card-body">
+            {% if active_subscriptions %}
+                <ul class="list-group">
+                    {% for sub in active_subscriptions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ sub.plan.name }}</strong><br>
+                                <small class="text-muted">
+                                    Действует с {{ sub.start_date|date:"d.m.Y" }} 
+                                    по {{ sub.end_date|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                            <span class="badge bg-success rounded-pill">Активна</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-info">У вас пока нет активных подписок.</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>История платежей</h2>
+        </div>
+        <div class="card-body">
+            {% if payments %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тариф</th>
+                            <th>Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.datetime|date:"d.m.Y H:i" }}</td>
+                                <td>{{ payment.plan.name }}</td>
+                                <td>{{ payment.money }} руб.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">Платежей пока не было.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

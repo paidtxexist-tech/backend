@@ -1,0 +1,17 @@
+{%  extends 'template.html' %}
+{% block content %}
+	<h1>Список тарифов:</h1>
+    <div class="plans">
+    {% for plan in plans %}
+        <div class="plan_card">
+        <h2>{{ plan.name }}</h2>
+        <p>{{ plan.description }}</p>
+        <p>{{ plan.duration }} дней</p>
+        <p>{{ plan.price }} руб.</p>
+        <a href="{% url 'checkout' plan.id %}">Выбрать</a>
+        </div>
+    {% empty %}
+        <p>Продажа тарифных планов временно приостановлена</p>
+    {% endfor %}
+    </div>
+{% endblock %}
