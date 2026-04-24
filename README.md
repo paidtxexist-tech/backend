@@ -5,5 +5,7 @@ _Функциональный прототип_
 Подключение происходит через стороннее ПО (~~AmneziaVPN~~, v2rayNG, WireGuard и др.)
 
 git clone https://github.com/paidtxexist-tech/midasvpn.git
+
 cd midasvpn
+
 docker-compose up --build
