@@ -18,8 +18,8 @@ class Subscription(models.Model):
     p.s. возможно, стоит вынести в отдельное приложение, но для mvp пусть будет здесь, а в дашборде юзера импорт"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    start_date = models.DateField(auto_now=True)
-    end_date = models.DateField()
+    start_date = models.DateTimeField(auto_now=True)
+    end_date = models.DateTimeField()
     is_active = models.BooleanField()
 
     def __str__(self):

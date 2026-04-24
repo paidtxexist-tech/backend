@@ -1,22 +1,18 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from django.contrib.auth import login, logout
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
 
-
-class RegisterView(CreateView):
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_user(request):
     """регистрация"""
-    form_class = UserCreationForm
-    template_name = 'register.html'
-    success_url = reverse_lazy('login')
-
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('homepage')
-
-def logout_view(request):
-    """выход"""
-    logout(request)
-    return redirect('homepage')
+    username = request.data.get('username')
+    password = request.data.get('password')
+    if not username or not password:
+        return Response({'error': 'Поля username и password обязательны'}, status=400)
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Пользователь уже существует'}, status=400)
+    user = User.objects.create_user(username=username, password=password)
+    return Response({'id': user.id, 'username': user.username}, status=201)
