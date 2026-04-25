@@ -24,3 +24,19 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user} до {self.end_date.strftime('%d.%m.%Y')}"
+
+class VPNKey(models.Model):
+    """vpn-ключ"""
+    key = models.CharField(max_length=255, unique=True, verbose_name="Ключ")
+    is_used = models.BooleanField(default=False, verbose_name="Использован")
+    subscription = models.OneToOneField(
+        Subscription,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='vpn_key',
+        verbose_name="Подписка"
+    )
+
+    def __str__(self):
+        return f"{self.key} ({'использован' if self.is_used else 'свободен'})"

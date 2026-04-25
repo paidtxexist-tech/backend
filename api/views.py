@@ -8,8 +8,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from .serializers import PlanSerializer, SubscriptionSerializer, PaymentSerializer
 from homepage.models import Plan
-from payment.models import Subscription, Payment
-
+from payment.models import Subscription, Payment, VPNKey
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -34,7 +33,11 @@ def create_payment(request):
     except Plan.DoesNotExist:
         return Response({'error': 'План не найден'}, status=404)
 
-    """господи, как же я ненавижу сериализаторы... их ещё и дебажить потом сто лет"""
+    vpn_key = VPNKey.objects.filter(is_used=False).first()
+    if not vpn_key:
+        return Response({'error': 'Нет доступных VPN-ключей'}, status=503)
+
+    """господи, как же я ненавижу сериализаторы..."""
 
     end_date = timezone.now() + timedelta(days=plan.duration)
     sub = Subscription.objects.create(
@@ -44,18 +47,24 @@ def create_payment(request):
         end_date=end_date,
         is_active=True
     )
+
     pay = Payment.objects.create(
         user=request.user,
         plan=plan,
         money=plan.price,
     )
+    # когда будет платёжный шлюз, здесь нужно будет проверять статус оплаты перед тем, как выдавать ключ
+    vpn_key.subscription = sub
+    vpn_key.is_used = True
+    vpn_key.save()
+
     serializer = SubscriptionSerializer(sub)
     return Response(serializer.data, status=201)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def my_subscriptions(request):
-    """текущие подписки"""
+    """текущие подписки у пользователя"""
     subs = Subscription.objects.filter(user=request.user, is_active=True)
     serializer = SubscriptionSerializer(subs, many=True)
     return Response(serializer.data)
