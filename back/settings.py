@@ -72,6 +72,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://146.59.13.110:3000",
+    "https://146.59.13.110:3000",
 ]
 
 SIMPLE_JWT = {
